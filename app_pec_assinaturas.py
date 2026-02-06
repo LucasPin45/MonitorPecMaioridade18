@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import io
 import re
 import time
 import unicodedata
@@ -23,7 +24,7 @@ import streamlit as st
 # ═══════════════════════════════════════════
 
 st.set_page_config(
-    page_title="Monitor de Assinaturas — PEC Maioridade Penal - Dep Julia Zanatta",
+    page_title="Monitor de Assinaturas — PEC",
     page_icon="📋",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -637,7 +638,7 @@ def render_table(df: pd.DataFrame, search_text: str = ""):
             "Foto": st.column_config.ImageColumn(
                 "📷",
                 help="Foto oficial — Câmara dos Deputados",
-                width="small",
+                width="large",
             ),
             "Nome": st.column_config.TextColumn("Nome", width="large"),
             "Partido": st.column_config.TextColumn("Partido", width="small"),
@@ -646,6 +647,19 @@ def render_table(df: pd.DataFrame, search_text: str = ""):
         },
     )
     st.caption(f"Exibindo {len(df_show)} deputado(s)")
+
+
+def to_xlsx_bytes(df: pd.DataFrame, columns: List[str]) -> bytes:
+    """Exporta DataFrame para bytes .xlsx em memória."""
+    buf = io.BytesIO()
+    with pd.ExcelWriter(buf, engine="openpyxl") as writer:
+        df[columns].to_excel(writer, index=False, sheet_name="Deputados")
+        # Auto-ajustar largura das colunas
+        ws = writer.sheets["Deputados"]
+        for i, col in enumerate(columns, 1):
+            max_len = max(df[col].astype(str).str.len().max(), len(col)) + 3
+            ws.column_dimensions[ws.cell(row=1, column=i).column_letter].width = min(max_len, 40)
+    return buf.getvalue()
 
 
 def build_chart_data_partido(df: pd.DataFrame) -> pd.DataFrame:
@@ -722,7 +736,7 @@ pct_camara = (assinou_n / total_api * 100) if total_api > 0 else 0
 
 st.markdown("""
 <div class="hero-header">
-    <h1>📋 Monitor de Assinaturas — PEC Maioridade Penal - Dep Júlia Zanatta</h1>
+    <h1>📋 Monitor de Assinaturas — PEC</h1>
     <p>Acompanhamento em tempo real das assinaturas coletadas, cruzando com a base oficial de deputados em exercício.</p>
 </div>
 """, unsafe_allow_html=True)
@@ -829,14 +843,14 @@ with tab_assinou:
 
     render_table(df_view_a, search_a)
 
-    # Download CSV
+    # Download XLSX
     if not df_view_a.empty:
-        csv = df_view_a[["Nome", "Partido", "UF"]].to_csv(index=False).encode("utf-8")
+        xlsx_a = to_xlsx_bytes(df_view_a, ["Nome", "Partido", "UF"])
         st.download_button(
-            "⬇️ Baixar lista (CSV)",
-            data=csv,
-            file_name="assinaram_pec.csv",
-            mime="text/csv",
+            "⬇️ Baixar lista (Excel)",
+            data=xlsx_a,
+            file_name="assinaram_pec.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
 with tab_nao_assinou:
@@ -858,12 +872,12 @@ with tab_nao_assinou:
     render_table(df_view_n, search_n)
 
     if not df_view_n.empty:
-        csv_n = df_view_n[["Nome", "Partido", "UF"]].to_csv(index=False).encode("utf-8")
+        xlsx_n = to_xlsx_bytes(df_view_n, ["Nome", "Partido", "UF"])
         st.download_button(
-            "⬇️ Baixar lista (CSV)",
-            data=csv_n,
-            file_name="nao_assinaram_pec.csv",
-            mime="text/csv",
+            "⬇️ Baixar lista (Excel)",
+            data=xlsx_n,
+            file_name="nao_assinaram_pec.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
 
@@ -876,8 +890,8 @@ if nao_encontrados:
     with st.expander(f"⚠️ Nomes não reconhecidos ({len(nao_encontrados)})", expanded=False):
         st.markdown(
             "Esses nomes **não casaram** com nenhum deputado em exercício na base oficial. "
-            "Possivelmente esteja fora do mandato. "
-            
+            "Verifique grafia, apelidos ou títulos. Se for um deputado legítimo, "
+            "adicione um alias no dicionário `ALIASES_OFICIAIS`."
         )
         for nome in nao_encontrados:
             st.markdown(f"- `{nome}`")
