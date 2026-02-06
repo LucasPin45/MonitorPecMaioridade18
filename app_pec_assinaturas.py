@@ -23,7 +23,7 @@ import streamlit as st
 # ═══════════════════════════════════════════
 
 st.set_page_config(
-    page_title="Monitor de Assinaturas — PEC",
+    page_title="Monitor de Assinaturas — PEC Maioridade Penal - Dep Julia Zanatta",
     page_icon="📋",
     layout="wide",
     initial_sidebar_state="expanded",
