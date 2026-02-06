@@ -722,7 +722,7 @@ pct_camara = (assinou_n / total_api * 100) if total_api > 0 else 0
 
 st.markdown("""
 <div class="hero-header">
-    <h1>📋 Monitor de Assinaturas — PEC - Dep Júlia Zanatta</h1>
+    <h1>📋 Monitor de Assinaturas — PEC Maioridade Penal - Dep Júlia Zanatta</h1>
     <p>Acompanhamento em tempo real das assinaturas coletadas, cruzando com a base oficial de deputados em exercício.</p>
 </div>
 """, unsafe_allow_html=True)
