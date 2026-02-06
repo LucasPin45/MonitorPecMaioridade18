@@ -876,8 +876,8 @@ if nao_encontrados:
     with st.expander(f"⚠️ Nomes não reconhecidos ({len(nao_encontrados)})", expanded=False):
         st.markdown(
             "Esses nomes **não casaram** com nenhum deputado em exercício na base oficial. "
-            "Verifique grafia, apelidos ou títulos. Se for um deputado legítimo, "
-            "adicione um alias no dicionário `ALIASES_OFICIAIS`."
+            "Possivelmente esteja fora do mandato. "
+            
         )
         for nome in nao_encontrados:
             st.markdown(f"- `{nome}`")
