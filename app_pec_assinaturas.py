@@ -1,16 +1,17 @@
-# app_pec_assinaturas_api.py
-# Streamlit - Painel de assinaturas de PEC (Assinou x Não assinou)
-# Fonte de deputados: API Dados Abertos da Câmara (sem Excel)
+# app_pec_assinaturas_api_v2.py
+# Streamlit - Painel de assinaturas PEC (Assinou x Não assinou)
+# Fonte de deputados em exercício: API Dados Abertos da Câmara (sem Excel)
+# Matching robusto: strict -> loose -> heurística por tokens (apelido/título)
 #
 # Requisitos:
 #   pip install streamlit pandas requests unidecode
 #
 # Rodar:
-#   streamlit run app_pec_assinaturas_api.py
+#   streamlit run app_pec_assinaturas_api_v2.py
 
 import re
 import unicodedata
-from difflib import get_close_matches
+from dataclasses import dataclass
 from typing import Dict, List, Optional, Set, Tuple
 
 import pandas as pd
@@ -23,18 +24,19 @@ from unidecode import unidecode
 # CONFIG
 # =========================
 META_ASSINATURAS = 171
+API_BASE = "https://dadosabertos.camara.leg.br/api/v2"
+TIMEOUT = 30
 
-# Cole aqui a lista da Câmara (um por linha). Pode vir com lixo tipo "Subscritor" e "Coautoria Deputado(s)".
+# Cole a lista que a Câmara exibe (um por linha). Pode vir com "Subscritor"/"Coautoria".
 ASSINANTES_RAW_DEFAULT = """Júlia Zanatta
 Adilson Barroso
+Alexandre Guimarães
 Alberto Fraga
 Alberto Mourão
 Alceu Moreira
-Alexandre Guimarães
-Aluisio Mendes
 Altineu Côrtes
+Aluisio Mendes
 André Fernandes
-Benes Leocádio
 Bia Kicis
 Bibo Nunes
 Bruno Ganem
@@ -73,7 +75,6 @@ General Girão
 General Pazuello
 Geovania de Sá
 Gilson Marques
-Gilvan da Federal
 Giovani Cherini
 Gutemberg Reis
 Gustavo Gayer
@@ -82,10 +83,12 @@ Jorge Goetten
 José Medeiros
 Junior Lourenço
 Junio Amaral
+Julia Zanatta
 Kim Kataguiri
 Lincoln Portela
 Luciano Alves
 Luisa Canziani
+Luiz Carlos Motta
 Luiz Lima
 Luiz Philippe de Orleans e Bragança
 Marcel van Hattem
@@ -118,15 +121,16 @@ Sargento Gonçalves
 Sargento Portugal
 Silvia Waiãpi
 Sóstenes Cavalcante
-Subscritor
 Vinicius Gurgel
 Wellington Roberto
 Zé Trovão
 Zucco
+Subscritor
 Coautoria Deputado(s)
+Abilio Brunini
 """
 
-# Itens administrativos/lixo que aparecem na listagem e NÃO são parlamentares
+# Linhas lixo administrativas
 BLACKLIST_LINES = {
     "subscritor",
     "coautoria deputado(s)",
@@ -135,8 +139,8 @@ BLACKLIST_LINES = {
     "coautoria",
 }
 
-# Títulos/prefixos comuns (nome parlamentar) — removemos APENAS no modo "loose"
-TITULOS_PREFIXO = [
+# Prefixos/títulos comuns
+TITULOS_PREFIXO = {
     "deputado", "deputada",
     "delegado", "delegada",
     "coronel",
@@ -146,24 +150,23 @@ TITULOS_PREFIXO = [
     "pastor",
     "dr", "dra", "doutor", "doutora",
     "pr", "pr.", "pra", "pra.",
-]
+}
 
-# Sufixos que frequentemente aparecem/omitem ("Júnior", "Filho", etc.) — removemos APENAS no modo "loose"
-SUFIXOS = [
+# Sufixos comuns
+SUFIXOS = {
     "junior", "júnior", "jr", "jr.",
     "filho", "neto",
     "pai",
-]
+}
 
-API_BASE = "https://dadosabertos.camara.leg.br/api/v2"
-TIMEOUT = 30
+# Stopwords de ligação (não ajudam no match)
+STOPWORDS = {"de", "da", "do", "das", "dos", "e", "d"}
 
 
 # =========================
-# Normalização / parsing
+# Normalização
 # =========================
 def norm_basic(s: str) -> str:
-    """Normalização básica: sem acento, minúsculo, sem pontuação, espaços únicos."""
     if s is None:
         return ""
     s = str(s).strip()
@@ -177,35 +180,43 @@ def norm_basic(s: str) -> str:
     return s
 
 
+def tokens(s: str) -> List[str]:
+    x = norm_basic(s)
+    if not x:
+        return []
+    return [t for t in x.split() if t and t not in STOPWORDS]
+
+
+def strip_prefix_titles(tok: List[str]) -> List[str]:
+    out = tok[:]
+    while out and out[0] in {norm_basic(t) for t in TITULOS_PREFIXO}:
+        out = out[1:]
+    return out
+
+
+def strip_suffixes(tok: List[str]) -> List[str]:
+    out = tok[:]
+    while out and out[-1] in {norm_basic(t) for t in SUFIXOS}:
+        out = out[:-1]
+    return out
+
+
 def norm_strict_name(s: str) -> str:
-    """Chave estrita: mantém sufixos (junior etc.), só normaliza caracteres."""
     return norm_basic(s)
 
 
 def norm_loose_name(s: str) -> str:
-    """
-    Chave 'loose': remove títulos no início e sufixos comuns,
-    para bater nome parlamentar com nome civil/cadastral.
-    """
-    x = norm_basic(s)
-    if not x:
-        return ""
-
-    parts = x.split()
-
-    # remove títulos do início (um ou mais)
-    while parts and parts[0] in {norm_basic(t) for t in TITULOS_PREFIXO}:
-        parts = parts[1:]
-
-    # remove sufixos no fim (um ou mais)
-    while parts and parts[-1] in {norm_basic(t) for t in SUFIXOS}:
-        parts = parts[:-1]
-
-    return " ".join(parts).strip()
+    # remove títulos no começo + sufixos no fim + stopwords
+    tok = tokens(s)
+    tok = strip_prefix_titles(tok)
+    tok = strip_suffixes(tok)
+    return " ".join(tok).strip()
 
 
+# =========================
+# Parsing de assinantes
+# =========================
 def parse_assinantes(texto: str) -> List[str]:
-    """Extrai nomes válidos (remove linhas vazias e lixo administrativo)."""
     out = []
     seen = set()
     for line in (texto or "").splitlines():
@@ -224,27 +235,17 @@ def parse_assinantes(texto: str) -> List[str]:
 # =========================
 # API Câmara
 # =========================
-@st.cache_data(ttl=60 * 60)  # 1h
+@st.cache_data(ttl=60 * 60)
 def fetch_deputados_em_exercicio() -> pd.DataFrame:
-    """
-    Busca deputados em exercício via API /deputados (paginado).
-    Retorna dataframe com colunas principais.
-    """
     sess = requests.Session()
     sess.headers.update({"Accept": "application/json"})
-
     itens = 100
     pagina = 1
     rows = []
 
     while True:
         url = f"{API_BASE}/deputados"
-        params = {
-            "itens": itens,
-            "pagina": pagina,
-            "ordem": "ASC",
-            "ordenarPor": "nome",
-        }
+        params = {"itens": itens, "pagina": pagina, "ordem": "ASC", "ordenarPor": "nome"}
         r = sess.get(url, params=params, timeout=TIMEOUT)
         r.raise_for_status()
         j = r.json()
@@ -252,272 +253,99 @@ def fetch_deputados_em_exercicio() -> pd.DataFrame:
         if not dados:
             break
 
-        # Na prática, esse endpoint costuma listar apenas os deputados em exercício.
-        # Mesmo assim, nós tratamos como "base oficial" do painel.
         for d in dados:
-            rows.append({
-                "id": d.get("id"),
-                "nome": d.get("nome"),
-                "siglaPartido": d.get("siglaPartido"),
-                "siglaUf": d.get("siglaUf"),
-                "urlFoto": d.get("urlFoto"),
-                "uri": d.get("uri"),
-            })
+            rows.append(
+                {
+                    "id": d.get("id"),
+                    "nome": d.get("nome"),
+                    "siglaPartido": d.get("siglaPartido"),
+                    "siglaUf": d.get("siglaUf"),
+                    "urlFoto": d.get("urlFoto"),
+                    "uri": d.get("uri"),
+                }
+            )
 
         pagina += 1
-
-        # proteção
-        if pagina > 20:
+        if pagina > 30:
             break
 
     df = pd.DataFrame(rows).dropna(subset=["id", "nome"])
     df["nome_strict"] = df["nome"].map(norm_strict_name)
     df["nome_loose"] = df["nome"].map(norm_loose_name)
-    return df
+    return df.reset_index(drop=True)
 
 
 def build_loose_index(df_dep: pd.DataFrame) -> Dict[str, List[int]]:
-    """
-    Índice loose_key -> lista de índices do dataframe.
-    Usado para auto-match somente quando único.
-    """
-    idx = {}
-    for i, row in df_dep.reset_index(drop=True).iterrows():
+    idx: Dict[str, List[int]] = {}
+    for i, row in df_dep.iterrows():
         k = row["nome_loose"]
-        if not k:
-            continue
-        idx.setdefault(k, []).append(i)
+        if k:
+            idx.setdefault(k, []).append(int(i))
     return idx
 
 
-def resolve_signer_to_deputy(
-    signer_name: str,
+# =========================
+# Heurística forte p/ apelidos
+# =========================
+def token_set_similarity(a_tokens: List[str], b_tokens: List[str]) -> float:
+    """Jaccard simples em tokens (0..1)."""
+    sa, sb = set(a_tokens), set(b_tokens)
+    if not sa or not sb:
+        return 0.0
+    inter = len(sa & sb)
+    union = len(sa | sb)
+    return inter / union if union else 0.0
+
+
+def nickname_firstname_score(a: str, b: str) -> float:
+    """
+    Score leve para primeiros nomes parecidos (paulinho ~ paulo).
+    Usa prefixo de 3 letras e distância simples.
+    """
+    a = norm_basic(a)
+    b = norm_basic(b)
+    if not a or not b:
+        return 0.0
+    # prefixo 3
+    pa = a[:3]
+    pb = b[:3]
+    return 1.0 if pa == pb else 0.0
+
+
+def best_fuzzy_candidate(
+    signer: str,
     df_dep: pd.DataFrame,
-    loose_index: Dict[str, List[int]],
-) -> Tuple[Optional[int], str]:
+    min_score: float = 0.55,
+    min_margin: float = 0.10,
+) -> Tuple[Optional[int], float]:
     """
-    Resolve um assinante para um deputado do DF:
-    1) match estrito por nome_strict
-    2) match loose (só se chave cair em UM único deputado)
-    3) sem match
-    Retorna (idx_deputy, modo)
+    Encontra melhor candidato por heurística token-set.
+    Aceita somente se:
+      - score >= min_score
+      - diferença para o 2º colocado >= min_margin
+    Também exige que o ÚLTIMO sobrenome bata (ex.: freire, ramagem, telhada, waiapi).
     """
-    s_strict = norm_strict_name(signer_name)
-    s_loose = norm_loose_name(signer_name)
+    s_tok = tokens(signer)
+    s_tok = strip_prefix_titles(s_tok)
+    s_tok = strip_suffixes(s_tok)
+    if not s_tok:
+        return None, 0.0
 
-    # (1) estrito
-    hit_strict = df_dep.index[df_dep["nome_strict"] == s_strict].tolist()
-    if len(hit_strict) == 1:
-        return int(hit_strict[0]), "strict"
-    if len(hit_strict) > 1:
-        # raro: nomes idênticos (quase impossível), evita falso positivo
-        return None, "ambiguous_strict"
+    s_last = s_tok[-1]  # sobrenome final do assinante (muito informativo)
 
-    # (2) loose com unicidade
-    cand = loose_index.get(s_loose, [])
-    if len(cand) == 1:
-        return int(cand[0]), "loose_unique"
-    if len(cand) > 1:
-        return None, "ambiguous_loose"
+    best_i = None
+    best = -1.0
+    second = -1.0
 
-    return None, "no_match"
+    for i, row in df_dep.iterrows():
+        cand_name = row["nome"]
+        c_tok = tokens(cand_name)
+        c_last = c_tok[-1] if c_tok else ""
 
+        # regra dura: último sobrenome deve bater
+        if not c_last or c_last != s_last:
+            continue
 
-def to_csv_bytes(df: pd.DataFrame) -> bytes:
-    return df.to_csv(index=False).encode("utf-8-sig")
+        score = token_set_similarity(s_tok, c_tok)
 
-
-# =========================
-# UI (sem sidebar)
-# =========================
-st.set_page_config(page_title="PEC — Assinou x Não assinou (API Câmara)", layout="wide")
-st.title("PEC — Assinou x Não assinou (Deputados em exercício via API da Câmara)")
-
-col1, col2, col3 = st.columns([1, 1, 2])
-with col1:
-    meta = st.number_input("Meta de assinaturas", min_value=1, value=META_ASSINATURAS, step=1)
-with col2:
-    camara_oficial = st.number_input("Contagem oficial (Câmara)", min_value=0, value=93, step=1)
-with col3:
-    busca = st.text_input("🔎 Buscar (nome/partido/UF)", value="").strip()
-
-st.markdown("### Cole a lista dos assinantes (um por linha)")
-assinantes_text = st.text_area("", value=ASSINANTES_RAW_DEFAULT, height=220)
-
-st.markdown("### Variantes (opcional — só se você quiser forçar grafia específica)")
-variantes_text = st.text_area("Um por linha (ex.: 'Alexandre Ramagem', 'José Telhada', etc.)", value="", height=100)
-
-st.divider()
-
-# ===== carrega base oficial (API) =====
-with st.spinner("Carregando deputados em exercício via API da Câmara..."):
-    df_dep = fetch_deputados_em_exercicio()
-
-if df_dep.empty:
-    st.error("Não consegui obter deputados via API (base vazia).")
-    st.stop()
-
-loose_index = build_loose_index(df_dep)
-
-# ===== processa assinantes =====
-assinantes = parse_assinantes(assinantes_text)
-variantes = parse_assinantes(variantes_text)
-
-# Variantes entram como assinantes adicionais (mas só ajudam se forem nomes do cadastro/API)
-assinantes_all = assinantes + [v for v in variantes if v not in assinantes]
-
-matches = []
-unmatched = []
-ambiguous = []
-
-df_dep_reset = df_dep.reset_index(drop=True)
-
-for name in assinantes_all:
-    idx, mode = resolve_signer_to_deputy(name, df_dep_reset, loose_index)
-    if idx is None:
-        if mode.startswith("ambiguous"):
-            ambiguous.append({"Nome (lista)": name, "Motivo": mode})
-        else:
-            unmatched.append({"Nome (lista)": name, "Motivo": mode})
-        continue
-
-    dep = df_dep_reset.loc[idx].to_dict()
-    matches.append({
-        "Nome (lista)": name,
-        "Match": mode,
-        "id": dep.get("id"),
-        "Nome (API)": dep.get("nome"),
-        "Partido": dep.get("siglaPartido"),
-        "UF": dep.get("siglaUf"),
-        "urlFoto": dep.get("urlFoto"),
-    })
-
-df_match = pd.DataFrame(matches).drop_duplicates(subset=["id"])  # evita contar duas vezes
-assinou_ids = set(df_match["id"].dropna().astype(int).tolist())
-
-# monta base final (deputados em exercício)
-df_base = df_dep_reset.copy()
-df_base["Assinou"] = df_base["id"].astype(int).isin(assinou_ids)
-
-# métricas
-total = len(df_base)
-assinou_n = int(df_base["Assinou"].sum())
-nao_n = total - assinou_n
-faltam_meta = max(int(meta) - assinou_n, 0)
-delta_oficial = int(camara_oficial) - assinou_n
-
-m1, m2, m3, m4, m5 = st.columns(5)
-m1.metric("Deputados em exercício (API)", total)
-m2.metric("Assinou (painel)", assinou_n)
-m3.metric("Não assinou (painel)", nao_n)
-m4.metric(f"Faltam p/ {int(meta)}", faltam_meta)
-m5.metric("Diferença p/ oficial", delta_oficial)
-
-if delta_oficial == 0:
-    st.success("✅ Painel alinhado com a contagem oficial informada.")
-elif delta_oficial > 0:
-    st.warning(
-        "⚠️ O painel está abaixo do oficial. "
-        "Isso normalmente significa: algum assinante ainda não está casando com o nome da API (apelido/título/grafia). "
-        "Veja as abas 'Não encontrados' e 'Sugestões'."
-    )
-else:
-    st.warning(
-        "⚠️ O painel está acima do oficial (possível duplicidade ou lista com nomes além do que a Câmara está contando). "
-        "Revise a lista e a aba 'Ambíguos'."
-    )
-
-# filtros
-df_view = df_base.copy()
-if busca:
-    df_view["_search"] = (
-        df_view["nome"].astype(str)
-        + " | " + df_view["siglaPartido"].astype(str)
-        + " | " + df_view["siglaUf"].astype(str)
-    )
-    df_view = df_view[df_view["_search"].str.contains(busca, case=False, na=False)]
-
-f1, f2, f3 = st.columns([1, 1, 1])
-with f1:
-    ufs = sorted(df_view["siglaUf"].dropna().astype(str).unique().tolist())
-    uf_sel = st.multiselect("UF", options=ufs, default=[])
-with f2:
-    parts = sorted(df_view["siglaPartido"].dropna().astype(str).unique().tolist())
-    part_sel = st.multiselect("Partido", options=parts, default=[])
-with f3:
-    only_nao = st.checkbox("Mostrar só NÃO assinou", value=False)
-
-if uf_sel:
-    df_view = df_view[df_view["siglaUf"].astype(str).isin(uf_sel)]
-if part_sel:
-    df_view = df_view[df_view["siglaPartido"].astype(str).isin(part_sel)]
-if only_nao:
-    df_view = df_view[~df_view["Assinou"]]
-
-# tabelas principais
-cols_show = ["Assinou", "nome", "siglaPartido", "siglaUf", "id", "urlFoto"]
-df_assinou = df_view[df_view["Assinou"]].copy()
-df_nao = df_view[~df_view["Assinou"]].copy()
-
-# Diagnósticos adicionais: sugestões para não encontrados
-nome_api_lista = df_dep_reset["nome"].dropna().astype(str).tolist()
-sugestoes = []
-for item in unmatched[:300]:
-    n = item["Nome (lista)"]
-    cand = get_close_matches(n, nome_api_lista, n=5, cutoff=0.60)
-    sugestoes.append({
-        "Nome (lista)": n,
-        "Sugestões (API)": " | ".join(cand),
-    })
-df_sug = pd.DataFrame(sugestoes)
-
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["✅ Assinou", "❌ Não assinou", "📎 Match detalhado", "🧪 Não encontrados", "⚠️ Ambíguos"]
-)
-
-with tab1:
-    st.subheader(f"✅ Assinou ({len(df_assinou)})")
-    st.dataframe(df_assinou[cols_show], use_container_width=True, height=520)
-    c1, c2 = st.columns(2)
-    with c1:
-        st.download_button("Baixar CSV (assinou)", to_csv_bytes(df_assinou[cols_show]), "pec_assinou.csv", "text/csv")
-    with c2:
-        st.download_button("Baixar CSV (IDs assinou)", to_csv_bytes(df_assinou[["id", "nome"]]), "pec_assinou_ids.csv", "text/csv")
-
-with tab2:
-    st.subheader(f"❌ Não assinou ({len(df_nao)})")
-    st.dataframe(df_nao[cols_show], use_container_width=True, height=520)
-    c1, c2 = st.columns(2)
-    with c1:
-        st.download_button("Baixar CSV (não assinou)", to_csv_bytes(df_nao[cols_show]), "pec_nao_assinou.csv", "text/csv")
-    with c2:
-        st.download_button("Baixar CSV (IDs não assinou)", to_csv_bytes(df_nao[["id", "nome"]]), "pec_nao_assinou_ids.csv", "text/csv")
-
-with tab3:
-    st.subheader(f"📎 Match detalhado (lista → API) ({len(df_match)})")
-    if df_match.empty:
-        st.info("Nenhum match feito (revise a lista).")
-    else:
-        st.dataframe(df_match, use_container_width=True, height=520)
-        st.download_button("Baixar CSV (match)", to_csv_bytes(df_match), "pec_match_lista_api.csv", "text/csv")
-
-with tab4:
-    st.subheader(f"🧪 Nomes da lista que NÃO casaram com a API ({len(unmatched)})")
-    if not unmatched:
-        st.success("Tudo casou com a API.")
-    else:
-        st.dataframe(pd.DataFrame(unmatched), use_container_width=True, height=300)
-        st.subheader("💡 Sugestões automáticas (para você copiar em Variantes, se quiser)")
-        st.dataframe(df_sug, use_container_width=True, height=520)
-
-with tab5:
-    st.subheader(f"⚠️ Ambíguos (evitei auto-match para não errar) ({len(ambiguous)})")
-    if not ambiguous:
-        st.success("Sem casos ambíguos.")
-    else:
-        st.dataframe(pd.DataFrame(ambiguous), use_container_width=True, height=520)
-
-st.caption(
-    "Obs.: o painel usa a lista de deputados via API da Câmara e faz match por nome (estrito) e por nome (loose) "
-    "apenas quando o loose é único, para evitar contagem errada."
-)
+        # bô
