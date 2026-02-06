@@ -1,23 +1,21 @@
-# app_pec_assinaturas_api_v2.py
+# app_pec_assinaturas.py
 # Streamlit - Painel de assinaturas PEC (Assinou x Não assinou)
 # Fonte de deputados em exercício: API Dados Abertos da Câmara (sem Excel)
-# Matching robusto: strict -> loose -> heurística por tokens (apelido/título)
+# Matching robusto: strict -> loose -> fuzzy por tokens
 #
 # Requisitos:
 #   pip install streamlit pandas requests unidecode
 #
 # Rodar:
-#   streamlit run app_pec_assinaturas_api_v2.py
+#   streamlit run app_pec_assinaturas.py
 
 import re
 import unicodedata
-from dataclasses import dataclass
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 import requests
 import streamlit as st
-from unidecode import unidecode
 
 
 # =========================
@@ -27,7 +25,6 @@ META_ASSINATURAS = 171
 API_BASE = "https://dadosabertos.camara.leg.br/api/v2"
 TIMEOUT = 30
 
-# Cole a lista que a Câmara exibe (um por linha). Pode vir com "Subscritor"/"Coautoria".
 ASSINANTES_RAW_DEFAULT = """Júlia Zanatta
 Adilson Barroso
 Alexandre Guimarães
@@ -130,7 +127,6 @@ Coautoria Deputado(s)
 Abilio Brunini
 """
 
-# Linhas lixo administrativas
 BLACKLIST_LINES = {
     "subscritor",
     "coautoria deputado(s)",
@@ -139,7 +135,6 @@ BLACKLIST_LINES = {
     "coautoria",
 }
 
-# Prefixos/títulos comuns
 TITULOS_PREFIXO = {
     "deputado", "deputada",
     "delegado", "delegada",
@@ -152,14 +147,7 @@ TITULOS_PREFIXO = {
     "pr", "pr.", "pra", "pra.",
 }
 
-# Sufixos comuns
-SUFIXOS = {
-    "junior", "júnior", "jr", "jr.",
-    "filho", "neto",
-    "pai",
-}
-
-# Stopwords de ligação (não ajudam no match)
+SUFIXOS = {"junior", "júnior", "jr", "jr.", "filho", "neto", "pai"}
 STOPWORDS = {"de", "da", "do", "das", "dos", "e", "d"}
 
 
@@ -189,14 +177,16 @@ def tokens(s: str) -> List[str]:
 
 def strip_prefix_titles(tok: List[str]) -> List[str]:
     out = tok[:]
-    while out and out[0] in {norm_basic(t) for t in TITULOS_PREFIXO}:
+    titles = {norm_basic(t) for t in TITULOS_PREFIXO}
+    while out and out[0] in titles:
         out = out[1:]
     return out
 
 
 def strip_suffixes(tok: List[str]) -> List[str]:
     out = tok[:]
-    while out and out[-1] in {norm_basic(t) for t in SUFIXOS}:
+    suf = {norm_basic(t) for t in SUFIXOS}
+    while out and out[-1] in suf:
         out = out[:-1]
     return out
 
@@ -206,7 +196,6 @@ def norm_strict_name(s: str) -> str:
 
 
 def norm_loose_name(s: str) -> str:
-    # remove títulos no começo + sufixos no fim + stopwords
     tok = tokens(s)
     tok = strip_prefix_titles(tok)
     tok = strip_suffixes(tok)
@@ -239,6 +228,7 @@ def parse_assinantes(texto: str) -> List[str]:
 def fetch_deputados_em_exercicio() -> pd.DataFrame:
     sess = requests.Session()
     sess.headers.update({"Accept": "application/json"})
+
     itens = 100
     pagina = 1
     rows = []
@@ -266,7 +256,7 @@ def fetch_deputados_em_exercicio() -> pd.DataFrame:
             )
 
         pagina += 1
-        if pagina > 30:
+        if pagina > 40:
             break
 
     df = pd.DataFrame(rows).dropna(subset=["id", "nome"])
@@ -285,10 +275,9 @@ def build_loose_index(df_dep: pd.DataFrame) -> Dict[str, List[int]]:
 
 
 # =========================
-# Heurística forte p/ apelidos
+# Fuzzy matching
 # =========================
 def token_set_similarity(a_tokens: List[str], b_tokens: List[str]) -> float:
-    """Jaccard simples em tokens (0..1)."""
     sa, sb = set(a_tokens), set(b_tokens)
     if not sa or not sb:
         return 0.0
@@ -298,18 +287,11 @@ def token_set_similarity(a_tokens: List[str], b_tokens: List[str]) -> float:
 
 
 def nickname_firstname_score(a: str, b: str) -> float:
-    """
-    Score leve para primeiros nomes parecidos (paulinho ~ paulo).
-    Usa prefixo de 3 letras e distância simples.
-    """
     a = norm_basic(a)
     b = norm_basic(b)
     if not a or not b:
         return 0.0
-    # prefixo 3
-    pa = a[:3]
-    pb = b[:3]
-    return 1.0 if pa == pb else 0.0
+    return 1.0 if a[:3] == b[:3] else 0.0
 
 
 def best_fuzzy_candidate(
@@ -318,34 +300,252 @@ def best_fuzzy_candidate(
     min_score: float = 0.55,
     min_margin: float = 0.10,
 ) -> Tuple[Optional[int], float]:
-    """
-    Encontra melhor candidato por heurística token-set.
-    Aceita somente se:
-      - score >= min_score
-      - diferença para o 2º colocado >= min_margin
-    Também exige que o ÚLTIMO sobrenome bata (ex.: freire, ramagem, telhada, waiapi).
-    """
     s_tok = tokens(signer)
     s_tok = strip_prefix_titles(s_tok)
     s_tok = strip_suffixes(s_tok)
     if not s_tok:
         return None, 0.0
 
-    s_last = s_tok[-1]  # sobrenome final do assinante (muito informativo)
+    s_last = s_tok[-1]
 
     best_i = None
     best = -1.0
     second = -1.0
 
     for i, row in df_dep.iterrows():
-        cand_name = row["nome"]
-        c_tok = tokens(cand_name)
-        c_last = c_tok[-1] if c_tok else ""
+        c_tok = tokens(row["nome"])
+        if not c_tok:
+            continue
 
-        # regra dura: último sobrenome deve bater
-        if not c_last or c_last != s_last:
+        c_last = c_tok[-1]
+        if c_last != s_last:
             continue
 
         score = token_set_similarity(s_tok, c_tok)
 
-        # bô
+        if s_tok and c_tok:
+            score += 0.05 * nickname_firstname_score(s_tok[0], c_tok[0])
+
+        if score > best:
+            second = best
+            best = score
+            best_i = int(i)
+        elif score > second:
+            second = score
+
+    if best_i is None:
+        return None, 0.0
+
+    if best >= min_score and (best - second) >= min_margin:
+        return best_i, best
+
+    return None, best
+
+
+def resolve_signer_to_deputy(
+    signer_name: str,
+    df_dep: pd.DataFrame,
+    loose_index: Dict[str, List[int]],
+) -> Tuple[Optional[int], str]:
+    s_strict = norm_strict_name(signer_name)
+    s_loose = norm_loose_name(signer_name)
+
+    # (1) strict
+    hit = df_dep.index[df_dep["nome_strict"] == s_strict].tolist()
+    if len(hit) == 1:
+        return int(hit[0]), "strict"
+    if len(hit) > 1:
+        return None, "ambiguous_strict"
+
+    # (2) loose único
+    cand = loose_index.get(s_loose, [])
+    if len(cand) == 1:
+        return int(cand[0]), "loose_unique"
+    if len(cand) > 1:
+        return None, "ambiguous_loose"
+
+    # (3) fuzzy
+    best_i, best_score = best_fuzzy_candidate(signer_name, df_dep)
+    if best_i is not None:
+        return best_i, f"fuzzy_tokens({best_score:.2f})"
+
+    return None, "no_match"
+
+
+def to_csv_bytes(df: pd.DataFrame) -> bytes:
+    return df.to_csv(index=False).encode("utf-8-sig")
+
+
+# =========================
+# UI
+# =========================
+st.set_page_config(page_title="PEC — Assinou x Não assinou (API Câmara) v2", layout="wide")
+st.title("PEC — Painel de Assinaturas (Assinou x Não assinou) — API Câmara (v2)")
+
+c1, c2, c3 = st.columns([1, 1, 2])
+with c1:
+    meta = st.number_input("Meta", min_value=1, value=META_ASSINATURAS, step=1)
+with c2:
+    oficial = st.number_input("Oficial (Câmara)", min_value=0, value=93, step=1)
+with c3:
+    busca = st.text_input("🔎 Buscar (nome/partido/UF)", value="").strip()
+
+st.markdown("### Lista de assinantes (um por linha)")
+assinantes_text = st.text_area(
+    label="Lista de assinantes",
+    value=ASSINANTES_RAW_DEFAULT,
+    height=220,
+    label_visibility="collapsed",
+)
+
+st.markdown("### Variantes (opcional)")
+variantes_text = st.text_area(
+    label="Variantes de nomes (forçar match)",
+    value="",
+    height=90,
+    help="Se quiser forçar algum nome exatamente como na API, cole aqui (um por linha).",
+)
+
+st.divider()
+
+# ===== base API =====
+with st.spinner("Carregando deputados em exercício via API..."):
+    df_dep = fetch_deputados_em_exercicio()
+
+if df_dep.empty:
+    st.error("API retornou base vazia.")
+    st.stop()
+
+loose_index = build_loose_index(df_dep)
+
+# ===== processa lista =====
+assinantes = parse_assinantes(assinantes_text)
+variantes = parse_assinantes(variantes_text)
+assinantes_all = assinantes + [v for v in variantes if v not in assinantes]
+
+matches = []
+unmatched = []
+ambiguous = []
+
+for name in assinantes_all:
+    idx, mode = resolve_signer_to_deputy(name, df_dep, loose_index)
+    if idx is None:
+        if mode.startswith("ambiguous"):
+            ambiguous.append({"Nome (lista)": name, "Motivo": mode})
+        else:
+            unmatched.append({"Nome (lista)": name, "Motivo": mode})
+        continue
+
+    dep = df_dep.loc[idx].to_dict()
+    matches.append(
+        {
+            "Nome (lista)": name,
+            "Match": mode,
+            "id": int(dep["id"]),
+            "Nome (API)": dep["nome"],
+            "Partido": dep.get("siglaPartido"),
+            "UF": dep.get("siglaUf"),
+            "urlFoto": dep.get("urlFoto"),
+        }
+    )
+
+df_match = pd.DataFrame(matches)
+if not df_match.empty:
+    df_match = df_match.drop_duplicates(subset=["id"])
+
+assinou_ids = set(df_match["id"].dropna().astype(int).tolist()) if not df_match.empty else set()
+
+# ===== base final =====
+df_base = df_dep.copy()
+df_base["Assinou"] = df_base["id"].astype(int).isin(assinou_ids)
+
+total = len(df_base)
+assinou_n = int(df_base["Assinou"].sum())
+nao_n = total - assinou_n
+faltam = max(int(meta) - assinou_n, 0)
+delta = int(oficial) - assinou_n
+
+m1, m2, m3, m4, m5 = st.columns(5)
+m1.metric("Deputados em exercício (API)", total)
+m2.metric("Assinou (painel)", assinou_n)
+m3.metric("Não assinou", nao_n)
+m4.metric(f"Faltam p/ {int(meta)}", faltam)
+m5.metric("Diferença p/ oficial", delta)
+
+if delta == 0:
+    st.success("✅ Bateu com o oficial.")
+elif delta > 0:
+    st.warning("⚠️ Abaixo do oficial: veja 'Não encontrados' e 'Ambíguos'.")
+else:
+    st.warning("⚠️ Acima do oficial: revise duplicidades/nomes na lista.")
+
+# ===== filtros =====
+df_view = df_base.copy()
+if busca:
+    df_view["_search"] = (
+        df_view["nome"].astype(str)
+        + " | " + df_view["siglaPartido"].astype(str)
+        + " | " + df_view["siglaUf"].astype(str)
+    )
+    df_view = df_view[df_view["_search"].str.contains(busca, case=False, na=False)]
+
+f1, f2, f3 = st.columns([1, 1, 1])
+with f1:
+    ufs = sorted(df_view["siglaUf"].dropna().astype(str).unique().tolist())
+    uf_sel = st.multiselect("UF", options=ufs, default=[])
+with f2:
+    parts = sorted(df_view["siglaPartido"].dropna().astype(str).unique().tolist())
+    part_sel = st.multiselect("Partido", options=parts, default=[])
+with f3:
+    only_nao = st.checkbox("Mostrar só NÃO assinou", value=False)
+
+if uf_sel:
+    df_view = df_view[df_view["siglaUf"].astype(str).isin(uf_sel)]
+if part_sel:
+    df_view = df_view[df_view["siglaPartido"].astype(str).isin(part_sel)]
+if only_nao:
+    df_view = df_view[~df_view["Assinou"]]
+
+cols_show = ["Assinou", "nome", "siglaPartido", "siglaUf", "id", "urlFoto"]
+df_assinou = df_view[df_view["Assinou"]].copy()
+df_nao = df_view[~df_view["Assinou"]].copy()
+
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["✅ Assinou", "❌ Não assinou", "📎 Match detalhado", "🧪 Não encontrados", "⚠️ Ambíguos"]
+)
+
+with tab1:
+    st.subheader(f"✅ Assinou ({len(df_assinou)})")
+    st.dataframe(df_assinou[cols_show], width="stretch", height=520)
+    st.download_button("Baixar CSV (assinou)", to_csv_bytes(df_assinou[cols_show]), "pec_assinou.csv", "text/csv")
+
+with tab2:
+    st.subheader(f"❌ Não assinou ({len(df_nao)})")
+    st.dataframe(df_nao[cols_show], width="stretch", height=520)
+    st.download_button("Baixar CSV (não assinou)", to_csv_bytes(df_nao[cols_show]), "pec_nao_assinou.csv", "text/csv")
+
+with tab3:
+    st.subheader(f"📎 Match detalhado (lista → API) ({len(df_match)})")
+    if df_match.empty:
+        st.info("Nenhum match feito.")
+    else:
+        st.dataframe(df_match, width="stretch", height=520)
+        st.download_button("Baixar CSV (match)", to_csv_bytes(df_match), "pec_match.csv", "text/csv")
+
+with tab4:
+    st.subheader(f"🧪 Não encontrados ({len(unmatched)})")
+    if not unmatched:
+        st.success("Tudo casou com a API.")
+    else:
+        st.dataframe(pd.DataFrame(unmatched), width="stretch", height=520)
+
+with tab5:
+    st.subheader(f"⚠️ Ambíguos ({len(ambiguous)})")
+    if not ambiguous:
+        st.success("Sem ambíguos.")
+    else:
+        st.dataframe(pd.DataFrame(ambiguous), width="stretch", height=520)
+
+st.caption(
+    "Matching v2: strict → loose (remove títulos/sufixos) → fuzzy por tokens (exige mesmo sobrenome final + unicidade por margem)."
+)
