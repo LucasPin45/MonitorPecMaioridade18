@@ -40,6 +40,9 @@ Bruno Ganem
 Cabo Gilberto Silva
 Capitão Alberto Neto
 Capitão Alden
+Benes Leocádio
+Gilvan da Federal
+Rodrigo Estacho
 Carlos Jordy
 Caroline de Toni
 Chris Tonietto
