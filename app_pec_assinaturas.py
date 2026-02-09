@@ -279,6 +279,7 @@ ASSINANTES_RAW_DEFAULT = """Julia Zanatta
 
 Abilio Brunini
 Adilson Barroso
+Adriana Ventura
 Alberto Fraga
 Alberto Mourão
 Alceu Moreira
@@ -320,6 +321,7 @@ Domingos Sávio
 Dr. Frederico
 Dr. Jaziel
 Dr. Victor Linhalis
+Emidinho Madeira
 Eros Biondini
 Evair Vieira de Melo
 Fausto Jr.
@@ -372,6 +374,7 @@ Roberto Duarte
 Roberto Monteiro Pai
 Rodolfo Nogueira
 Rodrigo Estacho
+Rosana Valle
 Rosangela Moro
 Sanderson
 Sargento Fahur
