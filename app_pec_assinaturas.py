@@ -275,30 +275,32 @@ STOPWORDS_LINHAS = {
     "assinou",
 }
 
-ASSINANTES_RAW_DEFAULT = """Júlia Zanatta
+ASSINANTES_RAW_DEFAULT = """JJulia Zanatta
+
+Abilio Brunini
 Adilson Barroso
-Alexandre Guimarães
 Alberto Fraga
 Alberto Mourão
 Alceu Moreira
+Alexandre Guimarães
 Altineu Côrtes
 Aluisio Mendes
 André Fernandes
+Benes Leocádio
 Bia Kicis
 Bibo Nunes
 Bruno Ganem
 Cabo Gilberto Silva
 Capitão Alberto Neto
 Capitão Alden
-Benes Leocádio
-Gilvan da Federal
-Rodrigo Estacho
 Carlos Jordy
 Caroline de Toni
 Chris Tonietto
 Clarissa Tércio
 Coronel Assis
 Coronel Chrisóstomo
+Coronel Fernanda
+Coronel Meira
 Coronel Telhada
 Coronel Ulysses
 Covatti Filho
@@ -318,6 +320,7 @@ Domingos Sávio
 Dr. Frederico
 Dr. Jaziel
 Dr. Victor Linhalis
+Eros Biondini
 Evair Vieira de Melo
 Fausto Jr.
 Fred Linhares
@@ -325,15 +328,17 @@ General Girão
 General Pazuello
 Geovania de Sá
 Gilson Marques
+Gilvan da Federal
 Giovani Cherini
-Gutemberg Reis
 Gustavo Gayer
+Gutemberg Reis
+Icaro de Valmir
 Ismael
+Jefferson Campos
 Jorge Goetten
 José Medeiros
 Junior Lourenço
 Junio Amaral
-Julia Zanatta
 Kim Kataguiri
 Lincoln Portela
 Luciano Alves
@@ -342,6 +347,7 @@ Luiz Carlos Motta
 Luiz Lima
 Luiz Philippe de Orleans e Bragança
 Marcel van Hattem
+Marcelo Moraes
 Marcos Pollon
 Mario Frias
 Mauricio do Vôlei
@@ -365,7 +371,9 @@ Roberta Roma
 Roberto Duarte
 Roberto Monteiro Pai
 Rodolfo Nogueira
+Rodrigo Estacho
 Rosangela Moro
+Sanderson
 Sargento Fahur
 Sargento Gonçalves
 Sargento Portugal
@@ -375,9 +383,6 @@ Vinicius Gurgel
 Wellington Roberto
 Zé Trovão
 Zucco
-Subscritor
-Coautoria Deputado(s)
-Abilio Brunini
 """
 
 
