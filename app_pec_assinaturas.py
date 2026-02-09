@@ -15,6 +15,8 @@ import unicodedata
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import pandas as pd
 import requests
 import streamlit as st
@@ -806,7 +808,22 @@ with gcol1:
     st.markdown('<div class="chart-title">Assinaturas por Partido (top 15)</div>', unsafe_allow_html=True)
     chart_partido = build_chart_data_partido(df_assinou)
     if not chart_partido.empty:
-        st.bar_chart(chart_partido, x="Partido", y="Qtd", color="#1a6fb5", horizontal=True, height=380)
+        fig, ax = plt.subplots(figsize=(6, 5))
+        cp = chart_partido.sort_values("Qtd", ascending=True)  # ascending p/ barh ficar decrescente de cima p/ baixo
+        bars = ax.barh(cp["Partido"], cp["Qtd"], color="#1a6fb5", height=0.65, edgecolor="none")
+        for bar in bars:
+            w = bar.get_width()
+            ax.text(w + 0.3, bar.get_y() + bar.get_height() / 2, f"{int(w)}", va="center", fontsize=8, fontweight="bold", color="#2c3e50")
+        ax.set_xlabel("")
+        ax.set_ylabel("")
+        ax.xaxis.set_major_locator(mticker.MaxNLocator(integer=True))
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.tick_params(axis="y", labelsize=8)
+        ax.tick_params(axis="x", labelsize=8)
+        plt.tight_layout()
+        st.pyplot(fig, use_container_width=True)
+        plt.close(fig)
     else:
         st.info("Sem dados para exibir.")
 
@@ -814,7 +831,22 @@ with gcol2:
     st.markdown('<div class="chart-title">Assinaturas por Estado</div>', unsafe_allow_html=True)
     chart_uf = build_chart_data_uf(df_assinou)
     if not chart_uf.empty:
-        st.bar_chart(chart_uf, x="UF", y="Qtd", color="#059669", height=380)
+        fig, ax = plt.subplots(figsize=(6, 5))
+        cu = chart_uf.sort_values("Qtd", ascending=False)
+        bars = ax.bar(cu["UF"], cu["Qtd"], color="#059669", width=0.65, edgecolor="none")
+        for bar in bars:
+            h = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width() / 2, h + 0.2, f"{int(h)}", ha="center", va="bottom", fontsize=7, fontweight="bold", color="#2c3e50")
+        ax.set_xlabel("")
+        ax.set_ylabel("")
+        ax.yaxis.set_major_locator(mticker.MaxNLocator(integer=True))
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.tick_params(axis="x", labelsize=7, rotation=45)
+        ax.tick_params(axis="y", labelsize=8)
+        plt.tight_layout()
+        st.pyplot(fig, use_container_width=True)
+        plt.close(fig)
     else:
         st.info("Sem dados para exibir.")
 
@@ -898,9 +930,7 @@ if nao_encontrados:
     st.markdown("---")
     with st.expander(f"⚠️ Nomes não reconhecidos ({len(nao_encontrados)})", expanded=False):
         st.markdown(
-            "Esses nomes **não casaram** com nenhum deputado em exercício na base oficial. "
-            "Verifique grafia, apelidos ou títulos. Se for um deputado legítimo, "
-            "adicione um alias no dicionário `ALIASES_OFICIAIS`."
+            "Esses nomes são de parlamentares que assinaram, mas não estão no mandato e por isso não são contados."
         )
         for nome in nao_encontrados:
             st.markdown(f"- `{nome}`")
