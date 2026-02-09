@@ -275,7 +275,7 @@ STOPWORDS_LINHAS = {
     "assinou",
 }
 
-ASSINANTES_RAW_DEFAULT = """JJulia Zanatta
+ASSINANTES_RAW_DEFAULT = """Julia Zanatta
 
 Abilio Brunini
 Adilson Barroso
