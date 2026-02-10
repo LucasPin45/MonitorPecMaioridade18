@@ -296,6 +296,7 @@ Bruno Ganem
 Cabo Gilberto Silva
 Capitão Alberto Neto
 Capitão Alden
+Capitão Augusto
 Carlos Jordy
 Caroline de Toni
 Chris Tonietto
@@ -336,6 +337,7 @@ Gilvan da Federal
 Giovani Cherini
 Gustavo Gayer
 Gutemberg Reis
+Helio Lopes
 Icaro de Valmir
 Ismael
 Jefferson Campos
