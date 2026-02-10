@@ -310,6 +310,7 @@ Coronel Ulysses
 Covatti Filho
 Cristiane Lopes
 Daniel Freitas
+Daniela Reinehr
 Dayany Bittencourt
 Delegado Bruno Lima
 Delegado Caveira
@@ -322,6 +323,7 @@ Diego Garcia
 Dilceu Sperafico
 Domingos Sávio
 Dr. Frederico
+Dr. Flávio
 Dr. Jaziel
 Dr. Victor Linhalis
 Emidinho Madeira
@@ -331,12 +333,11 @@ Fausto Jr.
 Fred Linhares
 General Girão
 General Pazuello
-Geovania de Sá
+Geovani Cherini
+Geraldo Mendes
+Giacobo
 Gilson Marques
 Gilvan da Federal
-Giovani Cherini
-Dr Flávio
-Geraldo Mendes
 Gustavo Gayer
 Gutemberg Reis
 Helio Lopes
@@ -366,20 +367,22 @@ Nelson Barbudo
 Nicoletti
 Nikolas Ferreira
 Padovani
+Paulo Marinho Jr
 Pastor Diniz
 Pastor Eurico
-Paulinho Freire
 Pedro Lupion
 Pedro Westphalen
 Pezenti
 Pr. Marco Feliciano
 Priscila Costa
+Professor Alcides
 Ricardo Guidi
 Ricardo Salles
 Roberta Roma
 Roberto Duarte
 Roberto Monteiro Pai
 Rodolfo Nogueira
+Rodrigo da Zaeli
 Rodrigo Estacho
 Rosana Valle
 Rosangela Moro
@@ -392,6 +395,7 @@ Sóstenes Cavalcante
 Vinicius Gurgel
 Wellington Roberto
 Zé Trovão
+Zé Vitor
 Zucco
 """
 
