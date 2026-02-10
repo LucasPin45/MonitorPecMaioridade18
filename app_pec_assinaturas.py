@@ -322,8 +322,8 @@ Delegado Ramagem
 Diego Garcia
 Dilceu Sperafico
 Domingos Sávio
+Dr Flávio
 Dr. Frederico
-Dr. Flávio
 Dr. Jaziel
 Dr. Victor Linhalis
 Emidinho Madeira
@@ -333,11 +333,12 @@ Fausto Jr.
 Fred Linhares
 General Girão
 General Pazuello
-Geovani Cherini
+Geovania de Sá
 Geraldo Mendes
 Giacobo
 Gilson Marques
 Gilvan da Federal
+Giovani Cherini
 Gustavo Gayer
 Gutemberg Reis
 Helio Lopes
@@ -370,6 +371,7 @@ Padovani
 Paulo Marinho Jr
 Pastor Diniz
 Pastor Eurico
+Paulinho Freire
 Pedro Lupion
 Pedro Westphalen
 Pezenti
