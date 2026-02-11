@@ -393,6 +393,7 @@ Sargento Fahur
 Sargento Gonçalves
 Sargento Portugal
 Silvia Waiãpi
+Silvio Antonio
 Sóstenes Cavalcante
 Vinicius Gurgel
 Wellington Roberto
