@@ -388,6 +388,7 @@ Rodolfo Nogueira
 Rodrigo da Zaeli
 Rodrigo Estacho
 Rosana Valle
+Rosângela Reis
 Rosangela Moro
 Sanderson
 Sargento Fahur
