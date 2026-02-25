@@ -286,9 +286,11 @@ Alberto Fraga
 Alberto Mourão
 Alceu Moreira
 Alexandre Guimarães
+Allan Garcês
 Altineu Côrtes
 Aluisio Mendes
 André Fernandes
+Any Ortiz
 Benes Leocádio
 Bia Kicis
 Bibo Nunes
@@ -331,6 +333,7 @@ Emidinho Madeira
 Eros Biondini
 Evair Vieira de Melo
 Fausto Jr.
+Filipe Martins
 Fred Linhares
 General Girão
 General Pazuello
@@ -359,6 +362,7 @@ Luiz Lima
 Luiz Philippe de Orleans e Bragança
 Marcel van Hattem
 Marcelo Moraes
+Marcio Alvino
 Marcos Pollon
 Mario Frias
 Mauricio do Vôlei
@@ -369,24 +373,23 @@ Nelson Barbudo
 Nicoletti
 Nikolas Ferreira
 Padovani
-Paulo Marinho Jr
 Pastor Diniz
 Pastor Eurico
+Paulo Marinho Jr
 Paulinho Freire
 Pedro Lupion
 Pedro Westphalen
 Pezenti
 Pr. Marco Feliciano
 Priscila Costa
-Professor Alcides
 Ricardo Guidi
 Ricardo Salles
 Roberta Roma
 Roberto Duarte
 Roberto Monteiro Pai
-Rodolfo Nogueira
 Rodrigo da Zaeli
 Rodrigo Estacho
+Rodolfo Nogueira
 Rosana Valle
 Rosângela Reis
 Rosangela Moro
@@ -394,6 +397,7 @@ Sanderson
 Sargento Fahur
 Sargento Gonçalves
 Sargento Portugal
+Sergio Souza
 Silvia Waiãpi
 Silvio Antonio
 Sóstenes Cavalcante
