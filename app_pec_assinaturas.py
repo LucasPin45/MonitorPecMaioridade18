@@ -346,6 +346,7 @@ Giovani Cherini
 Gustavo Gayer
 Gutemberg Reis
 Helio Lopes
+Hercílio Coelho Diniz
 Icaro de Valmir
 Ismael
 Jefferson Campos
@@ -361,9 +362,9 @@ Luiz Carlos Motta
 Luiz Lima
 Luiz Philippe de Orleans e Bragança
 Marcel van Hattem
-Marcelo Moraes
 Marcio Alvino
 Marcos Pollon
+Marcelo Moraes
 Mario Frias
 Mauricio do Vôlei
 Mauricio Marcon
@@ -375,8 +376,8 @@ Nikolas Ferreira
 Padovani
 Pastor Diniz
 Pastor Eurico
-Paulo Marinho Jr
 Paulinho Freire
+Paulo Marinho Jr
 Pedro Lupion
 Pedro Westphalen
 Pezenti
@@ -387,12 +388,12 @@ Ricardo Salles
 Roberta Roma
 Roberto Duarte
 Roberto Monteiro Pai
+Rodolfo Nogueira
 Rodrigo da Zaeli
 Rodrigo Estacho
-Rodolfo Nogueira
 Rosana Valle
-Rosângela Reis
 Rosangela Moro
+Rosângela Reis
 Sanderson
 Sargento Fahur
 Sargento Gonçalves
@@ -950,4 +951,5 @@ if nao_encontrados:
             "Esses nomes são de parlamentares que assinaram, mas não estão no mandato e por isso não são contados."
         )
         for nome in nao_encontrados:
+
             st.markdown(f"- `{nome}`")
