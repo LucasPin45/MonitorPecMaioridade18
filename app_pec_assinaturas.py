@@ -268,6 +268,7 @@ ALIASES_OFICIAIS: Dict[str, str] = {
 }
 
 STOPWORDS_LINHAS = {
+    "autoria",
     "coautoria deputado(s)",
     "coautoria deputados",
     "subscritor",
@@ -405,7 +406,6 @@ Sergio Souza
 Silvia Waiãpi
 Silvio Antonio
 Sóstenes Cavalcante
-Subscritor
 Vinicius Gurgel
 Wellington Roberto
 Zé Trovão
@@ -434,11 +434,22 @@ def normalize_name(s: str) -> str:
 
 
 def parse_assinantes(raw: str) -> List[str]:
+    todas = [ln.strip() for ln in (raw or "").splitlines() if ln.strip()]
+
+    # Detectar posição de "Subscritor" / "Subscritores"
+    idx_sub = None
+    for i, ln in enumerate(todas):
+        ln_norm = normalize_name(ln)
+        if ln_norm in ("subscritor", "subscritores"):
+            idx_sub = i
+            break
+
+    # Se encontrou, considerar somente os nomes APÓS essa linha
+    if idx_sub is not None:
+        todas = todas[idx_sub + 1:]
+
     lines = []
-    for ln in (raw or "").splitlines():
-        ln = ln.strip()
-        if not ln:
-            continue
+    for ln in todas:
         ln_norm = normalize_name(ln)
         if not ln_norm:
             continue
@@ -957,4 +968,3 @@ if nao_encontrados:
         for nome in nao_encontrados:
 
             st.markdown(f"- `{nome}`")
-
