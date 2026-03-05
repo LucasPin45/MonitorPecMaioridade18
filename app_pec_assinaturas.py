@@ -296,8 +296,8 @@ Bia Kicis
 Bibo Nunes
 Bruno Ganem
 Cabo Gilberto Silva
-Capitão Alberto Neto
 Capitão Alden
+Capitão Alberto Neto
 Capitão Augusto
 Carlos Jordy
 Caroline de Toni
@@ -316,11 +316,11 @@ Daniela Reinehr
 Dayany Bittencourt
 Delegado Bruno Lima
 Delegado Caveira
-Delegado Éder Mauro
 Delegado Fabio Costa
 Delegado Palumbo
 Delegado Paulo Bilynskyj
 Delegado Ramagem
+Delegado Éder Mauro
 Diego Garcia
 Dilceu Sperafico
 Domingos Sávio
@@ -355,6 +355,7 @@ José Medeiros
 Junior Lourenço
 Junio Amaral
 Kim Kataguiri
+Lafayette de Andrada
 Lincoln Portela
 Luciano Alves
 Luisa Canziani
@@ -362,9 +363,9 @@ Luiz Carlos Motta
 Luiz Lima
 Luiz Philippe de Orleans e Bragança
 Marcel van Hattem
+Marcelo Moraes
 Marcio Alvino
 Marcos Pollon
-Marcelo Moraes
 Mario Frias
 Mauricio do Vôlei
 Mauricio Marcon
@@ -373,11 +374,13 @@ Missionário José Olimpio
 Nelson Barbudo
 Nicoletti
 Nikolas Ferreira
+Olival Marques
 Padovani
 Pastor Diniz
 Pastor Eurico
-Paulinho Freire
+Paulo Litro
 Paulo Marinho Jr
+Paulinho Freire
 Pedro Lupion
 Pedro Westphalen
 Pezenti
@@ -402,6 +405,7 @@ Sergio Souza
 Silvia Waiãpi
 Silvio Antonio
 Sóstenes Cavalcante
+Subscritor
 Vinicius Gurgel
 Wellington Roberto
 Zé Trovão
@@ -953,3 +957,4 @@ if nao_encontrados:
         for nome in nao_encontrados:
 
             st.markdown(f"- `{nome}`")
+
