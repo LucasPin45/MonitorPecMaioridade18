@@ -278,139 +278,147 @@ STOPWORDS_LINHAS = {
     "assinou",
 }
 
-ASSINANTES_RAW_DEFAULT = """Julia Zanatta
+ASSINANTES_RAW_DEFAULT = """Autoria
 
-Abilio Brunini
-Adilson Barroso
-Adriana Ventura
+Julia Zanatta
+
+Coautoria Deputado(s)
+
+Delegado Paulo Bilynskyj
 Alberto Fraga
-Alberto Mourão
-Alceu Moreira
-Alexandre Guimarães
-Allan Garcês
-Altineu Côrtes
-Aluisio Mendes
-André Fernandes
-Any Ortiz
-Benes Leocádio
-Bia Kicis
+Dr. Victor Linhalis
+Ricardo Salles
+Dr. Jaziel
+Gilson Marques
+Luisa Canziani
+Coronel Chrisóstomo
+Delegado Caveira
+Coronel Assis
+Delegado Bruno Lima
+Gilvan da Federal
+Rodrigo Estacho
+Geovania de Sá
 Bibo Nunes
+Luciano Alves
+Mauricio Marcon
+Evair Vieira de Melo
+Delegado Éder Mauro
+Aluisio Mendes
+Rosangela Moro
+Dr. Frederico
 Bruno Ganem
-Cabo Gilberto Silva
-Capitão Alden
-Capitão Alberto Neto
+Luiz Carlos Motta
+Icaro de Valmir
+Sanderson
+Jefferson Campos
+Marcelo Moraes
+Rosana Valle
+Emidinho Madeira
+Adriana Ventura
+Missionário José Olimpio
+Helio Lopes
 Capitão Augusto
+Dr Flávio
+Geraldo Mendes
+Daniela Reinehr
+Paulo Marinho Jr
+Giacobo
+Rodrigo da Zaeli
+Silvio Antonio
+Eli Borges
+Rosângela Reis
+Sergio Souza
+Allan Garcês
+Marcio Alvino
+Lafayette de Andrada
+Olival Marques
+Subscritor
+
+Mario Frias
+Fred Linhares
+Junio Amaral
+Zucco
+Gustavo Gayer
+Pastor Eurico
+Luiz Lima
+Daniel Freitas
+Cabo Gilberto Silva
+Abilio Brunini
+Roberta Roma
+Silvia Waiãpi
+Pedro Lupion
+Giovani Cherini
+Gutemberg Reis
+Roberto Duarte
+Coronel Telhada
+Altineu Côrtes
+Delegado Ramagem
+Benes Leocádio
+Nikolas Ferreira
+Kim Kataguiri
+Alberto Mourão
+Pezenti
+Fausto Jr.
+Nicoletti
+Wellington Roberto
+Delegado Fabio Costa
+Messias Donato
+Sargento Portugal
+Roberto Monteiro Pai
+Sóstenes Cavalcante
+Sargento Gonçalves
+Junior Lourenço
+Marcel van Hattem
+Cristiane Lopes
+Dayany Bittencourt
+Paulinho Freire
+Clarissa Tércio
+Adilson Barroso
+Priscila Costa
+Zé Trovão
+Vinicius Gurgel
+Marcos Pollon
+Pr. Marco Feliciano
+General Pazuello
+Domingos Sávio
+Lincoln Portela
+José Medeiros
+General Girão
+Luiz Philippe de Orleans e Bragança
+Sargento Fahur
+Padovani
+Rodolfo Nogueira
+Mauricio do Vôlei
+Capitão Alberto Neto
+Alexandre Guimarães
+Delegado Palumbo
+Jorge Goetten
 Carlos Jordy
 Caroline de Toni
-Chris Tonietto
-Clarissa Tércio
-Coronel Assis
-Coronel Chrisóstomo
-Coronel Fernanda
-Coronel Meira
-Coronel Telhada
-Coronel Ulysses
-Covatti Filho
-Cristiane Lopes
-Daniel Freitas
-Daniela Reinehr
-Dayany Bittencourt
-Delegado Bruno Lima
-Delegado Caveira
-Delegado Fabio Costa
-Delegado Palumbo
-Delegado Paulo Bilynskyj
-Delegado Ramagem
-Delegado Éder Mauro
-Diego Garcia
-Dilceu Sperafico
-Domingos Sávio
-Dr Flávio
-Dr. Frederico
-Dr. Jaziel
-Dr. Victor Linhalis
-Eli Borges
-Emidinho Madeira
-Eros Biondini
-Evair Vieira de Melo
-Fausto Jr.
-Filipe Martins
-Fred Linhares
-General Girão
-General Pazuello
-Geovania de Sá
-Geraldo Mendes
-Giacobo
-Gilson Marques
-Gilvan da Federal
-Giovani Cherini
-Gustavo Gayer
-Gutemberg Reis
-Helio Lopes
-Hercílio Coelho Diniz
-Icaro de Valmir
-Ismael
-Jefferson Campos
-Jorge Goetten
-José Medeiros
-Junior Lourenço
-Junio Amaral
-Kim Kataguiri
-Lafayette de Andrada
-Lincoln Portela
-Luciano Alves
-Luisa Canziani
-Luiz Carlos Motta
-Luiz Lima
-Luiz Philippe de Orleans e Bragança
-Marcel van Hattem
-Marcelo Moraes
-Marcio Alvino
-Marcos Pollon
-Mario Frias
-Mauricio do Vôlei
-Mauricio Marcon
-Messias Donato
-Missionário José Olimpio
-Nelson Barbudo
-Nicoletti
-Nikolas Ferreira
-Olival Marques
-Padovani
-Pastor Diniz
-Pastor Eurico
-Paulo Litro
-Paulo Marinho Jr
-Paulinho Freire
-Pedro Lupion
-Pedro Westphalen
-Pezenti
-Pr. Marco Feliciano
-Priscila Costa
 Ricardo Guidi
-Ricardo Salles
-Roberta Roma
-Roberto Duarte
-Roberto Monteiro Pai
-Rodolfo Nogueira
-Rodrigo da Zaeli
-Rodrigo Estacho
-Rosana Valle
-Rosangela Moro
-Rosângela Reis
-Sanderson
-Sargento Fahur
-Sargento Gonçalves
-Sargento Portugal
-Sergio Souza
-Silvia Waiãpi
-Silvio Antonio
-Sóstenes Cavalcante
-Vinicius Gurgel
-Wellington Roberto
-Zé Trovão
+Ismael
+Capitão Alden
+Bia Kicis
+Diego Garcia
+Alceu Moreira
+Pastor Diniz
+Pedro Westphalen
+André Fernandes
+Coronel Ulysses
+Chris Tonietto
+Dilceu Sperafico
+Nelson Barbudo
+Covatti Filho
+Coronel Fernanda
+Eros Biondini
+Coronel Meira
+Professor Alcides
 Zé Vitor
-Zucco
+Filipe Martins
+Any Ortiz
+Hercílio Coelho Diniz
+Paulo Litro
+Thiago Flores
 """
 
 
@@ -434,22 +442,11 @@ def normalize_name(s: str) -> str:
 
 
 def parse_assinantes(raw: str) -> List[str]:
-    todas = [ln.strip() for ln in (raw or "").splitlines() if ln.strip()]
-
-    # Detectar posição de "Subscritor" / "Subscritores"
-    idx_sub = None
-    for i, ln in enumerate(todas):
-        ln_norm = normalize_name(ln)
-        if ln_norm in ("subscritor", "subscritores"):
-            idx_sub = i
-            break
-
-    # Se encontrou, considerar somente os nomes APÓS essa linha
-    if idx_sub is not None:
-        todas = todas[idx_sub + 1:]
-
     lines = []
-    for ln in todas:
+    for ln in (raw or "").splitlines():
+        ln = ln.strip()
+        if not ln:
+            continue
         ln_norm = normalize_name(ln)
         if not ln_norm:
             continue
