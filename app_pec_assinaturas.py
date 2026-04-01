@@ -282,143 +282,159 @@ ASSINANTES_RAW_DEFAULT = """Autoria
 
 Julia Zanatta
 
-Coautoria Deputado(s)
-
-Delegado Paulo Bilynskyj
-Alberto Fraga
-Dr. Victor Linhalis
-Ricardo Salles
-Dr. Jaziel
-Gilson Marques
-Luisa Canziani
-Coronel Chrisóstomo
-Delegado Caveira
-Coronel Assis
-Delegado Bruno Lima
-Gilvan da Federal
-Rodrigo Estacho
-Geovania de Sá
-Bibo Nunes
-Luciano Alves
-Mauricio Marcon
-Evair Vieira de Melo
-Delegado Éder Mauro
-Aluisio Mendes
-Rosangela Moro
-Dr. Frederico
-Bruno Ganem
-Luiz Carlos Motta
-Icaro de Valmir
-Sanderson
-Jefferson Campos
-Marcelo Moraes
-Rosana Valle
-Emidinho Madeira
-Adriana Ventura
-Missionário José Olimpio
-Helio Lopes
-Capitão Augusto
-Dr Flávio
-Geraldo Mendes
-Daniela Reinehr
-Paulo Marinho Jr
-Giacobo
-Rodrigo da Zaeli
-Silvio Antonio
-Eli Borges
-Rosângela Reis
-Sergio Souza
-Allan Garcês
-Marcio Alvino
-Lafayette de Andrada
-Olival Marques
-Subscritor
-
-Mario Frias
-Fred Linhares
-Junio Amaral
-Zucco
-Gustavo Gayer
-Pastor Eurico
-Luiz Lima
-Daniel Freitas
-Cabo Gilberto Silva
 Abilio Brunini
-Roberta Roma
-Silvia Waiãpi
-Pedro Lupion
-Giovani Cherini
-Gutemberg Reis
-Roberto Duarte
-Coronel Telhada
-Altineu Côrtes
-Delegado Ramagem
-Benes Leocádio
-Nikolas Ferreira
-Kim Kataguiri
-Alberto Mourão
-Pezenti
-Fausto Jr.
-Nicoletti
-Wellington Roberto
-Delegado Fabio Costa
-Messias Donato
-Sargento Portugal
-Roberto Monteiro Pai
-Sóstenes Cavalcante
-Sargento Gonçalves
-Junior Lourenço
-Marcel van Hattem
-Cristiane Lopes
-Dayany Bittencourt
-Paulinho Freire
-Clarissa Tércio
 Adilson Barroso
-Priscila Costa
-Zé Trovão
-Vinicius Gurgel
-Marcos Pollon
-Pr. Marco Feliciano
-General Pazuello
-Domingos Sávio
-Lincoln Portela
-José Medeiros
-General Girão
-Luiz Philippe de Orleans e Bragança
-Sargento Fahur
-Padovani
-Rodolfo Nogueira
-Mauricio do Vôlei
-Capitão Alberto Neto
-Alexandre Guimarães
-Delegado Palumbo
-Jorge Goetten
-Carlos Jordy
-Caroline de Toni
-Ricardo Guidi
-Ismael
-Capitão Alden
-Bia Kicis
-Diego Garcia
+Adriana Ventura
+Alberto Fraga
+Alberto Mourão
 Alceu Moreira
-Pastor Diniz
-Pedro Westphalen
+Alexandre Guimarães
+Allan Garcês
+Aluisio Mendes
+Altineu Côrtes
 André Fernandes
-Coronel Ulysses
-Chris Tonietto
-Dilceu Sperafico
-Nelson Barbudo
-Covatti Filho
-Coronel Fernanda
-Eros Biondini
-Coronel Meira
-Professor Alcides
-Zé Vitor
-Filipe Martins
 Any Ortiz
+Bebeto
+Benes Leocádio
+Bia Kicis
+Bibo Nunes
+Bruno Ganem
+Cabo Gilberto Silva
+Capitão Alden
+Capitão Alberto Neto
+Capitão Augusto
+Carla Dickson
+Caroline de Toni
+Carlos Jordy
+Chris Tonietto
+Clarissa Tércio
+Coronel Assis
+Coronel Chrisóstomo
+Coronel Fernanda
+Coronel Meira
+Coronel Telhada
+Coronel Ulysses
+Covatti Filho
+Cristiane Lopes
+Daniel Agrobom
+Daniel Freitas
+Daniela Reinehr
+Dayany Bittencourt
+Delegada Ione
+Delegado Bruno Lima
+Delegado Caveira
+Delegado Éder Mauro
+Delegado Fabio Costa
+Delegado Matheus Laiola
+Delegado Palumbo
+Delegado Paulo Bilynskyj
+Delegado Ramagem
+Diego Garcia
+Dilceu Sperafico
+Domingos Sávio
+Dr Flávio
+Dr. Frederico
+Dr. Jaziel
+Dr. Luiz Ovando
+Dr. Victor Linhalis
+Eduardo Velloso
+Eli Borges
+Emidinho Madeira
+Eros Biondini
+Evair Vieira de Melo
+Fausto Jr.
+Filipe Martins
+Fred Linhares
+General Girão
+General Pazuello
+Geovania de Sá
+Geraldo Mendes
+Giacobo
+Gilson Marques
+Gilvan da Federal
+Giovani Cherini
+Guilherme Derrite
+Gustavo Gayer
+Gutemberg Reis
+Helio Lopes
 Hercílio Coelho Diniz
+Hugo Leal
+Icaro de Valmir
+Ismael
+Jefferson Campos
+Jorge Goetten
+José Medeiros
+Junio Amaral
+Junior Lourenço
+Kim Kataguiri
+Lafayette de Andrada
+Leo Prates
+Lincoln Portela
+Luciano Alves
+Luisa Canziani
+Luiz Carlos Motta
+Luiz Lima
+Luiz Philippe de Orleans e Bragança
+Magda Mofatto
+Marcel van Hattem
+Marcelo Moraes
+Marcio Alvino
+Marcos Pollon
+Mario Frias
+Marx Beltrão
+Mauricio do Vôlei
+Mauricio Marcon
+Mendonça Filho
+Messias Donato
+Miguel Lombardi
+Missionário José Olimpio
+Moses Rodrigues
+Nelson Barbudo
+Nicoletti
+Nikolas Ferreira
+Olival Marques
+Padovani
+Pastor Diniz
+Pastor Eurico
 Paulo Litro
+Paulo Marinho Jr
+Paulinho Freire
+Pedro Lupion
+Pedro Westphalen
+Pezenti
+Pr. Marco Feliciano
+Priscila Costa
+Professor Alcides
+Ribeiro Neto
+Ricardo Guidi
+Ricardo Salles
+Roberta Roma
+Roberto Duarte
+Roberto Monteiro Pai
+Rodrigo da Zaeli
+Rodrigo Estacho
+Rodrigo Valadares
+Rodolfo Nogueira
+Rosana Valle
+Rosangela Moro
+Rosângela Reis
+Sanderson
+Sargento Fahur
+Sargento Gonçalves
+Sargento Portugal
+Sergio Souza
+Silvia Waiãpi
+Silvio Antonio
+Silvye Alves
+Sóstenes Cavalcante
+Soldado Noelio
 Thiago Flores
+Vinicius Carvalho
+Vinicius Gurgel
+Wellington Roberto
+Zé Trovão
+Zé Vitor
+Zucco
 """
 
 
