@@ -292,6 +292,7 @@ Alexandre Guimarães
 Allan Garcês
 Aluisio Mendes
 Altineu Côrtes
+Amaro Neto
 André Fernandes
 Any Ortiz
 Bebeto
