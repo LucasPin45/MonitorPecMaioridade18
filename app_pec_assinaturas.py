@@ -281,10 +281,10 @@ STOPWORDS_LINHAS = {
 ASSINANTES_RAW_DEFAULT = """Autoria
 
 Julia Zanatta
-
 Abilio Brunini
 Adilson Barroso
 Adriana Ventura
+Afonso Hamm
 Alberto Fraga
 Alberto Mourão
 Alceu Moreira
@@ -301,12 +301,13 @@ Bia Kicis
 Bibo Nunes
 Bruno Ganem
 Cabo Gilberto Silva
-Capitão Alden
 Capitão Alberto Neto
+Capitão Alden
 Capitão Augusto
 Carla Dickson
 Caroline de Toni
 Carlos Jordy
+Celso Russomanno
 Chris Tonietto
 Clarissa Tércio
 Coronel Assis
@@ -317,6 +318,7 @@ Coronel Telhada
 Coronel Ulysses
 Covatti Filho
 Cristiane Lopes
+Da Vitoria
 Daniel Agrobom
 Daniel Freitas
 Daniela Reinehr
@@ -338,22 +340,30 @@ Dr. Frederico
 Dr. Jaziel
 Dr. Luiz Ovando
 Dr. Victor Linhalis
+Dr. Zacharias Calil
+Duda Ramos
 Eduardo Velloso
 Eli Borges
 Emidinho Madeira
 Eros Biondini
 Evair Vieira de Melo
 Fausto Jr.
+Felipe Becari
+Felipe Francischini
 Filipe Martins
+Franciane Bayer
 Fred Linhares
+Geovania de Sá
 General Girão
 General Pazuello
-Geovania de Sá
 Geraldo Mendes
 Giacobo
+Gilson Daniel
 Gilson Marques
 Gilvan da Federal
 Giovani Cherini
+Glaustin da Fokus
+Greyce Elias
 Guilherme Derrite
 Gustavo Gayer
 Gutemberg Reis
@@ -365,8 +375,8 @@ Ismael
 Jefferson Campos
 Jorge Goetten
 José Medeiros
-Junio Amaral
 Junior Lourenço
+Junio Amaral
 Kim Kataguiri
 Lafayette de Andrada
 Leo Prates
@@ -378,13 +388,15 @@ Luiz Lima
 Luiz Philippe de Orleans e Bragança
 Magda Mofatto
 Marcel van Hattem
+Marcelo Álvaro Antônio
 Marcelo Moraes
 Marcio Alvino
 Marcos Pollon
 Mario Frias
 Marx Beltrão
-Mauricio do Vôlei
+Matheus Noronha
 Mauricio Marcon
+Mauricio do Vôlei
 Mendonça Filho
 Messias Donato
 Miguel Lombardi
@@ -397,39 +409,43 @@ Olival Marques
 Padovani
 Pastor Diniz
 Pastor Eurico
+Paulo Freire Costa
 Paulo Litro
 Paulo Marinho Jr
 Paulinho Freire
 Pedro Lupion
 Pedro Westphalen
 Pezenti
-Pr. Marco Feliciano
 Priscila Costa
+Pr. Marco Feliciano
 Professor Alcides
-Ribeiro Neto
 Ricardo Guidi
 Ricardo Salles
-Roberta Roma
+Ribeiro Neto
 Roberto Duarte
 Roberto Monteiro Pai
-Rodrigo da Zaeli
+Roberta Roma
+Rodolfo Nogueira
 Rodrigo Estacho
 Rodrigo Valadares
-Rodolfo Nogueira
+Rodrigo da Zaeli
 Rosana Valle
-Rosangela Moro
 Rosângela Reis
+Rosangela Moro
+Saullo Vianna
 Sanderson
 Sargento Fahur
 Sargento Gonçalves
 Sargento Portugal
 Sergio Souza
-Silvia Waiãpi
 Silvio Antonio
+Silvia Waiãpi
 Silvye Alves
-Sóstenes Cavalcante
+Simone Marquetto
 Soldado Noelio
+Sóstenes Cavalcante
 Thiago Flores
+Vermelho
 Vinicius Carvalho
 Vinicius Gurgel
 Wellington Roberto
