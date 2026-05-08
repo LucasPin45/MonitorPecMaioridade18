@@ -321,6 +321,7 @@ Cristiane Lopes
 Da Vitoria
 Daniel Agrobom
 Daniel Freitas
+Daniel Trzeciak
 Daniela Reinehr
 Dayany Bittencourt
 Delegada Ione
@@ -336,6 +337,7 @@ Diego Garcia
 Dilceu Sperafico
 Domingos Sávio
 Dr Flávio
+Dr. Fernando Máximo
 Dr. Frederico
 Dr. Jaziel
 Dr. Luiz Ovando
@@ -372,6 +374,7 @@ Hercílio Coelho Diniz
 Hugo Leal
 Icaro de Valmir
 Ismael
+Itamar Paim
 Jefferson Campos
 Jorge Goetten
 José Medeiros
@@ -432,11 +435,11 @@ Rodrigo da Zaeli
 Rosana Valle
 Rosângela Reis
 Rosangela Moro
-Saullo Vianna
 Sanderson
 Sargento Fahur
 Sargento Gonçalves
 Sargento Portugal
+Saullo Vianna
 Sergio Souza
 Silvio Antonio
 Silvia Waiãpi
