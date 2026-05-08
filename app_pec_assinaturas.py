@@ -457,6 +457,8 @@ Zé Vitor
 Zucco
 Toninho Wandscheer
 Soraya Santos
+Gilberto Nascimento
+Mauricio Neves
 """
 
 
