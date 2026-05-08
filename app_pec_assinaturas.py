@@ -455,6 +455,8 @@ Wellington Roberto
 Zé Trovão
 Zé Vitor
 Zucco
+Toninho Wandscheer
+Soraya Santos
 """
 
 
